@@ -1,5 +1,5 @@
 // Independent of any Flutter app's Dart package name.
-module flutter_brand
+module github.com/wujingyue-tech/flutter_brand
 
 go 1.22
 

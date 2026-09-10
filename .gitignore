@@ -2,3 +2,4 @@
 /flutter_brand.exe
 *.exe
 .DS_Store
+/dist/

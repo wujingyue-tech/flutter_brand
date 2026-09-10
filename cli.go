@@ -6,6 +6,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Set by -ldflags "-X main.version=v1.2.3" on release builds.
+var version = "dev"
+
 type app struct {
 	root string
 }
@@ -13,11 +16,14 @@ type app struct {
 func newRoot() *cobra.Command {
 	a := &app{}
 	cmd := &cobra.Command{
-		Use:   "flutter_brand",
-		Short: "Template branding for a Flutter iOS/Android app",
-		Long: `Run from the Flutter app root (uses fvm dart when .fvmrc exists).
+		Use:     "flutter_brand",
+		Version: version,
+		Short:   "Template branding for a Flutter iOS/Android app",
+		Long: `init can run from anywhere. Other commands run from the Flutter
+app root (uses fvm dart when .fvmrc exists).
 
   go install .
+  flutter_brand init
   flutter_brand name --pub <snake_case>
   flutter_brand display --title "App Name" [--title-zh "应用名"]
   flutter_brand package --id <reverse.domain.id>
@@ -27,7 +33,7 @@ func newRoot() *cobra.Command {
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		PersistentPreRunE: func(cmd *cobra.Command, _ []string) error {
-			if !cmd.HasParent() || cmd.Name() == "help" || cmd.Name() == "completion" {
+			if !cmd.HasParent() || cmd.Name() == "help" || cmd.Name() == "completion" || cmd.Name() == "init" {
 				return nil
 			}
 			root, err := findRepoRoot()
@@ -40,6 +46,7 @@ func newRoot() *cobra.Command {
 	}
 	cmd.CompletionOptions.DisableDefaultCmd = true
 	cmd.AddCommand(
+		a.initCmd(),
 		a.nameCmd(),
 		a.displayCmd(),
 		a.packageCmd(),
